@@ -9,7 +9,7 @@
         :preConfig="preConfig"
         :afterCreated="afterCreated"
       />
-      <div class="stack"><h2>probando posicion</h2></div>
+      <input-world></input-world>
     </div>
   </div>
 </template>
@@ -17,10 +17,12 @@
 <script>
 import COSEBilkent from "cytoscape-cose-bilkent";
 import helloWorld from "@/components/HeaderComponents.vue";
+import inputWorld from "@/components/InputPalabra.vue"
 
 export default {
   components: {
     helloWorld,
+    inputWorld
   },
   data: () => ({
     elements: [

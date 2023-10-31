@@ -49,9 +49,11 @@ def es_palindromo(cadena,pila):
 # Prueba del autómata de pila para verificar si una cadena es un palíndromo
 cadena1 = "abba"
 cadena2 = "aba"
-cadena3 = "abca"
+cadena3 = "ababa"
+cadena4 = "abaa"
 pila=Pila()
 
 print(f'"{cadena1}" es un palíndromo: {es_palindromo(cadena1,pila)} el recorrido es {pila.states}')
 print(f'"{cadena2}" es un palíndromo: {es_palindromo(cadena2,pila)} el recorrido es {pila.states}')
 print(f'"{cadena3}" es un palíndromo: {es_palindromo(cadena3,pila)} el recorrido es {pila.states}')
+print(f'"{cadena4}" es un palíndromo: {es_palindromo(cadena4,pila)} el recorrido es {pila.states}')
