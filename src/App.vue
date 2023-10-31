@@ -1,0 +1,130 @@
+<template>
+  <div id="app">
+    <hello-world class="header" :msj="'Automata de pila'" />
+    <div class="container-main">
+      <cytoscape
+        class="cytoscape_style"
+        ref="cyRef"
+        :config="config"
+        :preConfig="preConfig"
+        :afterCreated="afterCreated"
+      />
+      <div class="stack"><h2>probando posicion</h2></div>
+    </div>
+  </div>
+</template>
+
+<script>
+import COSEBilkent from "cytoscape-cose-bilkent";
+import helloWorld from "@/components/HeaderComponents.vue";
+
+export default {
+  components: {
+    helloWorld,
+  },
+  data: () => ({
+    elements: [
+      { data: { id: "q0", label: "q0" } },
+      { data: { id: "q1", label: "q1" } },
+      { data: { id: "q2", label: "q2" } },
+
+      {
+        data: { id: "e0", source: "q0", target: "q0" },
+      },
+      {
+        data: { id: "e1", source: "q0", target: "q1", label: "b , b / λ" },
+      },
+      {
+        data: { id: "e2", source: "q0", target: "q1", label: "a , a / λ" },
+      },
+      {
+        data: { id: "e3", source: "q1", target: "q1", label: "a , a / λ" },
+      },
+      {
+        data: { id: "e4", source: "q1", target: "q1", label: "b , b / λ" },
+      },
+      {
+        data: { id: "e5", source: "q1", target: "q2", label: "λ , # / #" },
+      },
+    ],
+    config: {
+      style: [
+        {
+          selector: "node",
+          style: {
+            "background-color": "#fff",
+            color: "white",
+            label: "data(id)",
+          },
+        },
+        {
+          selector: "edge#e4",
+          style: {
+            "padding-top": "5px",
+            color: "red",
+          },
+        },
+        {
+          selector: "edge",
+          style: {
+            width: 2,
+            "line-color": "#9998",
+            color: "white",
+            "curve-style": "bezier", // Usar 'bezier' para las flechas
+            "target-arrow-shape": "triangle",
+            label: "data(label)",
+            "text-rotation": "autorotate",
+          },
+        },
+        {
+          selector: "#q2",
+          style: {
+            "border-color": "green", // Color del borde
+            "border-width": "2px", // Grosor del borde
+            "background-color": "white", // Color de fondo
+            "border-opacity": "1",
+            shape: "ellipse", // Forma del nodo
+            "text-outline-color": "green", // Color del texto
+            "text-outline-width": "2px", // Grosor del texto
+          },
+        },
+      ],
+    },
+  }),
+  methods: {
+    preConfig(Cytoscape) {
+      Cytoscape.use(COSEBilkent);
+    },
+    afterCreated(cy) {
+      // add elements and run layout algorithm
+      cy.add(this.elements)
+        .layout({ name: "grid", rows: 1, spacingFactor: 1.5 })
+        .run();
+
+      // example cytoscape event listener
+      // cy.on('mouseover', 'edge', (event) => {
+
+      // });
+    },
+  },
+  mounted() {},
+};
+</script>
+
+<style>
+.cytoscape_style {
+  width: 50%;
+  height: 40%;
+  background-color: black;
+  border-radius: 5px;
+}
+
+.header {
+  height: 60px;
+  border-radius: 5px;
+  margin-bottom: 2px;
+}
+.container-main{
+  display: flex;
+}
+</style>
