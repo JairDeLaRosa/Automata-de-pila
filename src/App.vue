@@ -10,16 +10,17 @@
         :afterCreated="afterCreated"
       />
       <input-world @start-simulation="onStartSimulation"></input-world>
-      <!-- <div>
+      <div>
         <label for="demo-sb">Spin Button</label>
         <b-form-spinbutton
           id="demo-sb"
           v-model="value"
-          min="1"
-          max="100"
+          min="100"
+          max="1000"
+          step="100"
         ></b-form-spinbutton>
         <p>Value: {{ value }}</p>
-      </div> -->
+      </div>
     </div>
   </div>
 </template>
@@ -35,8 +36,8 @@ export default {
     inputWorld,
   },
   data: () => ({
-    cy: null,
-    // value:50,
+    cy: [],
+    value:500,
     elements: [
       { data: { id: "q0", label: "q0" } },
       { data: { id: "q1", label: "q1" } },
@@ -84,7 +85,7 @@ export default {
             width: 2,
             "line-color": "#9998",
             color: "white",
-            "curve-style": "bezier", // Usar 'bezier' para las flechas
+            "curve-style": "bezier", 
             "target-arrow-shape": "triangle",
             label: "data(label)",
             "text-rotation": "autorotate",
@@ -110,32 +111,29 @@ export default {
       Cytoscape.use(COSEBilkent);
     },
     afterCreated(cy) {
-      this.cy = cy;
-      // add elements and run layout algorithm
+      // this.cy.push(cy)
       cy.add(this.elements)
         .layout({ name: "grid", rows: 1, spacingFactor: 1.5 })
         .run();
-
-      // example cytoscape event listener
-      // cy.on('mouseover', 'edge', (event) => {
-
-      // });
     },
     onStartSimulation(estados, i) {
       if (i > estados.length) {
         return;
       }
       const estadoActual = estados[i];
-      this.cy.nodes().style({ "background-color": "white" });
-      this.cy.$(`#q${estadoActual}`).style({ "background-color": "blue" });
+      this.$refs.cyRef.instance.nodes().style({ "background-color": "white" });
+      this.$refs.cyRef.instance
+        .$(`#q${estadoActual}`)
+        .style({ "background-color": "blue" });
       setTimeout(
         function () {
           this.onStartSimulation(estados, i + 1);
         }.bind(this),
-        1000
+        this.value
       ); // Cambia el tiempo de espera según tus preferencias
     },
   },
+  mounted() {},
 };
 </script>
 
