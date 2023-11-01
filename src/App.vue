@@ -51,7 +51,22 @@ export default {
       { data: { id: "q2", label: "q2" } },
 
       {
-        data: { id: "e0", source: "q0", target: "q0" },
+        data: { id: "e0", source: "q0", target: "q0", label:'b , b / bb' },
+      },
+      {
+        data: { id: "e6", source: "q0", target: "q0", label:'a , b / ba' },
+      },
+      {
+        data: { id: "e7", source: "q0", target: "q0", label:'b , a / ab' },
+      },
+      {
+        data: { id: "e8", source: "q0", target: "q0", label:'a , a / aa' },
+      },
+      {
+        data: { id: "e9", source: "q0", target: "q0", label:'b , # / #b' },
+      },
+      {
+        data: { id: "e10", source: "q0", target: "q0", label:'a , # / #a' },
       },
       {
         data: { id: "e1", source: "q0", target: "q1", label: "b , b / λ" },

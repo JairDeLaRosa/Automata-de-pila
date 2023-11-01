@@ -27,7 +27,7 @@ const i18n = new VueI18n({
   fallbackLocale: 'es', // Idioma de respaldo
   messages,
 });
-
+  
 
 
 new Vue({
