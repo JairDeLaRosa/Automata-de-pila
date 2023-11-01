@@ -1,7 +1,10 @@
 <template>
-  <div id="app">
-    <hello-world class="header" :msj="'Automata de pila'" />
-    <div class="container-main">
+  <b-container fluid id="app">
+    <b-col>
+      <hello-world class="header" :msj="'Automata de pila'" />
+    </b-col>
+
+    <b-col class="container-main">
       <cytoscape
         class="cytoscape_style"
         ref="cyRef"
@@ -26,13 +29,11 @@
           @start-simulation="onStartSimulation"
         ></input-world>
       </div>
-    </div>
-   
-  </div>
+    </b-col>
+  </b-container>
 </template>
 
 <script>
-
 import COSEBilkent from "cytoscape-cose-bilkent";
 import helloWorld from "@/components/HeaderComponents.vue";
 import inputWorld from "@/components/InputPalabra.vue";
@@ -123,21 +124,24 @@ export default {
         .run();
     },
     onStartSimulation(estados, i) {
-     
       if (i > estados.length) {
         return;
       }
       const estadoActual = estados[i];
-      this.$refs.cyRef.instance.nodes().style({ "background-color": "white" });
+      -this.$refs.cyRef.instance.nodes().style({ "background-color": "white" });
       this.$refs.cyRef.instance
         .$(`#q${estadoActual}`)
         .style({ "background-color": "blue" });
       setTimeout(
         function () {
+          this.$refs.cyRef.instance
+            .$(`#q${estadoActual}`)
+            .style({ "background-color": "white" });
           this.onStartSimulation(estados, i + 1);
         }.bind(this),
         this.value
-      ); // Cambia el tiempo de espera según tus preferencias
+      );
+      // Cambia el tiempo de espera según tus preferencias
     },
   },
   mounted() {},

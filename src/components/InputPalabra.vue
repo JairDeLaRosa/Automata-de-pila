@@ -8,12 +8,11 @@
         <b-form-input
           id="input-live"
           v-model="inputString"
-          :state="inputString != '' ? true:false"
+          :state="inputString != '' ? true : false"
           aria-describedby="input-live-help input-live-feedback"
           placeholder="Enter your word"
           trim
         ></b-form-input>
-        
       </b-row>
       <b-row class="mb-1">
         <b-button @click="validateWorld" variant="success">verificar</b-button>
@@ -32,13 +31,21 @@
           <P>{{ dismissCountDown }} seconds...</P>
         </b-alert>
       </b-row>
+
+      <b-row>
+        <stack-components :items="stack"></stack-components>
+      </b-row>
     </b-container>
   </div>
 </template>
 
 <script>
 import { Stack } from "@/assets/stack.js";
+import stackComponents from "@/components/Stack.vue";
 export default {
+  components: {
+    stackComponents,
+  },
   data() {
     return {
       dismissSecs: 3,
@@ -80,18 +87,21 @@ export default {
 
       this.stack.pushState(2);
       this.worldValidate = true;
+     
       this.recorrido();
       return;
     },
+   
     recorrido() {
       const estados = this.stack.states;
       const i = 0;
       this.$emit("start-simulation", estados, i);
       this.showAlert();
-      setTimeout(()=>{
-        this.inputString=""
-      },500)
-      
+      setTimeout(() => {
+        this.stack.world.name=this.inputString
+        this.stack.world.accepted=this.worldValidate
+        this.inputString = "";
+      }, 500);
     },
     countDownChanged(dismissCountDown) {
       this.dismissCountDown = dismissCountDown;

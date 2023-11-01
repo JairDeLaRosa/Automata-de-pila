@@ -3,6 +3,10 @@ export class Stack {
     constructor() {
         this.items = [];
         this.states = [];
+        this.world={
+            name:'',
+            accepted:false
+        }
     }
 
     push(item) {
