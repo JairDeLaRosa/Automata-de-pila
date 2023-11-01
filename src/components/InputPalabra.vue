@@ -50,15 +50,23 @@ export default {
         this.stack.pushState(1);
         if (this.stack.isEmpty() || this.inputString[i] !== this.stack.pop()) {
           this.worldValidate = false;
+          this.recorrido()
           return
         }
       }
 
       this.stack.pushState(2);
       this.worldValidate = true;
+      this.recorrido()
       return
 
     },
+    recorrido(){
+        const estados = this.stack.states;
+        const i=0
+        this.$emit('start-simulation', estados,i);
+        
+    }
   },
 };
 </script>

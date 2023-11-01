@@ -9,7 +9,7 @@
         :preConfig="preConfig"
         :afterCreated="afterCreated"
       />
-      <input-world></input-world>
+      <input-world @start-simulation="onStartSimulation"></input-world>
     </div>
   </div>
 </template>
@@ -25,6 +25,7 @@ export default {
     inputWorld
   },
   data: () => ({
+ 
     elements: [
       { data: { id: "q0", label: "q0" } },
       { data: { id: "q1", label: "q1" } },
@@ -50,6 +51,7 @@ export default {
       },
     ],
     config: {
+      cy:null,
       style: [
         {
           selector: "node",
@@ -98,6 +100,7 @@ export default {
       Cytoscape.use(COSEBilkent);
     },
     afterCreated(cy) {
+     this.cy=cy
       // add elements and run layout algorithm
       cy.add(this.elements)
         .layout({ name: "grid", rows: 1, spacingFactor: 1.5 })
@@ -108,8 +111,21 @@ export default {
 
       // });
     },
+    onStartSimulation(estados,i){
+      if (i > estados.length) {
+        return;
+      }
+      const estadoActual = estados[i];
+      this.cy.nodes().style({ 'background-color': "white" });
+      this.cy.$(`#q${estadoActual}`).style({ 'background-color': "blue" });
+      setTimeout(function () {
+        this.onStartSimulation(estados,(i + 1));
+      }.bind(this),1000); // Cambia el tiempo de espera según tus preferencias
+      
+    }
+    
   },
-  mounted() {},
+
 };
 </script>
 
