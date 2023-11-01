@@ -9,23 +9,30 @@
         :preConfig="preConfig"
         :afterCreated="afterCreated"
       />
-      <input-world @start-simulation="onStartSimulation"></input-world>
-      <div>
-        <label for="demo-sb">Spin Button</label>
-        <b-form-spinbutton
-          id="demo-sb"
-          v-model="value"
-          min="100"
-          max="1000"
-          step="100"
-        ></b-form-spinbutton>
-        <p>Value: {{ value }}</p>
+      <div class="ml-3">
+        <div style="border: solid 1px black" class="p-2 mb-2">
+          <label class="font-weight-bold" for="demo-sb">Velocidad</label>
+          <b-form-spinbutton
+            id="demo-sb"
+            v-model="value"
+            min="100"
+            max="1000"
+            step="100"
+          ></b-form-spinbutton>
+        </div>
+        <input-world
+          style="border: solid 1px black"
+          class="p-2"
+          @start-simulation="onStartSimulation"
+        ></input-world>
       </div>
     </div>
+   
   </div>
 </template>
 
 <script>
+
 import COSEBilkent from "cytoscape-cose-bilkent";
 import helloWorld from "@/components/HeaderComponents.vue";
 import inputWorld from "@/components/InputPalabra.vue";
@@ -36,8 +43,7 @@ export default {
     inputWorld,
   },
   data: () => ({
-    cy: [],
-    value:500,
+    value: 500,
     elements: [
       { data: { id: "q0", label: "q0" } },
       { data: { id: "q1", label: "q1" } },
@@ -85,7 +91,7 @@ export default {
             width: 2,
             "line-color": "#9998",
             color: "white",
-            "curve-style": "bezier", 
+            "curve-style": "bezier", // Usar 'bezier' para las flechas
             "target-arrow-shape": "triangle",
             label: "data(label)",
             "text-rotation": "autorotate",
@@ -117,6 +123,7 @@ export default {
         .run();
     },
     onStartSimulation(estados, i) {
+     
       if (i > estados.length) {
         return;
       }
