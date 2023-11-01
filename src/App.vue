@@ -10,6 +10,16 @@
         :afterCreated="afterCreated"
       />
       <input-world @start-simulation="onStartSimulation"></input-world>
+      <!-- <div>
+        <label for="demo-sb">Spin Button</label>
+        <b-form-spinbutton
+          id="demo-sb"
+          v-model="value"
+          min="1"
+          max="100"
+        ></b-form-spinbutton>
+        <p>Value: {{ value }}</p>
+      </div> -->
     </div>
   </div>
 </template>
@@ -17,15 +27,16 @@
 <script>
 import COSEBilkent from "cytoscape-cose-bilkent";
 import helloWorld from "@/components/HeaderComponents.vue";
-import inputWorld from "@/components/InputPalabra.vue"
+import inputWorld from "@/components/InputPalabra.vue";
 
 export default {
   components: {
     helloWorld,
-    inputWorld
+    inputWorld,
   },
   data: () => ({
- 
+    cy: null,
+    // value:50,
     elements: [
       { data: { id: "q0", label: "q0" } },
       { data: { id: "q1", label: "q1" } },
@@ -51,7 +62,6 @@ export default {
       },
     ],
     config: {
-      cy:null,
       style: [
         {
           selector: "node",
@@ -100,7 +110,7 @@ export default {
       Cytoscape.use(COSEBilkent);
     },
     afterCreated(cy) {
-     this.cy=cy
+      this.cy = cy;
       // add elements and run layout algorithm
       cy.add(this.elements)
         .layout({ name: "grid", rows: 1, spacingFactor: 1.5 })
@@ -111,21 +121,21 @@ export default {
 
       // });
     },
-    onStartSimulation(estados,i){
+    onStartSimulation(estados, i) {
       if (i > estados.length) {
         return;
       }
       const estadoActual = estados[i];
-      this.cy.nodes().style({ 'background-color': "white" });
-      this.cy.$(`#q${estadoActual}`).style({ 'background-color': "blue" });
-      setTimeout(function () {
-        this.onStartSimulation(estados,(i + 1));
-      }.bind(this),1000); // Cambia el tiempo de espera según tus preferencias
-      
-    }
-    
+      this.cy.nodes().style({ "background-color": "white" });
+      this.cy.$(`#q${estadoActual}`).style({ "background-color": "blue" });
+      setTimeout(
+        function () {
+          this.onStartSimulation(estados, i + 1);
+        }.bind(this),
+        1000
+      ); // Cambia el tiempo de espera según tus preferencias
+    },
   },
-
 };
 </script>
 
@@ -142,7 +152,7 @@ export default {
   border-radius: 5px;
   margin-bottom: 2px;
 }
-.container-main{
+.container-main {
   display: flex;
 }
 </style>
