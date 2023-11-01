@@ -2,11 +2,11 @@
   <div class="main">
     <h1>{{ msj }}</h1>
     <div>
-      <select  v-model="lan" name="language" id="">
+      <!-- <select  v-model="lan" name="language" id="">
         <option value="es">español</option>
         <option value="en">ingles</option>
         <option value="value3"></option>
-      </select>
+      </select> -->
     </div>
   </div>
 </template>
@@ -24,9 +24,9 @@ export default {
 
 <style>
 .main {
-  display: flex;
-  justify-content: space-between;
+  text-align: center  ;
   background: gray;
+  
 }
 .main h1 {
   margin: 2px;
