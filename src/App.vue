@@ -1,7 +1,7 @@
 <template>
   <b-container fluid id="app">
     <b-col>
-      <hello-world class="header" :msj="'Automata de pila'" />
+      <hello-world class="header" :msj="'Machine of turing'" />
     </b-col>
 
     <b-col class="container-main">
@@ -13,6 +13,7 @@
         :afterCreated="afterCreated"
       />
       <div class="ml-3">
+        <cinta/>
         <div style="border: solid 1px black" class="p-2 mb-2">
           <label class="font-weight-bold" for="demo-sb">Velocidad</label>
           <b-form-spinbutton
@@ -24,9 +25,9 @@
           ></b-form-spinbutton>
         </div>
         <input-world
+          @sendResult="onStartSimulation"
           style="border: solid 1px black"
           class="p-2"
-          @start-simulation="onStartSimulation"
         ></input-world>
       </div>
     </b-col>
@@ -37,11 +38,12 @@
 import COSEBilkent from "cytoscape-cose-bilkent";
 import helloWorld from "@/components/HeaderComponents.vue";
 import inputWorld from "@/components/InputPalabra.vue";
-
+import cinta from '@/components/Cinta.vue'
 export default {
   components: {
     helloWorld,
     inputWorld,
+    cinta
   },
   data: () => ({
     value: 500,
@@ -49,39 +51,32 @@ export default {
       { data: { id: "q0", label: "q0" } },
       { data: { id: "q1", label: "q1" } },
       { data: { id: "q2", label: "q2" } },
+      { data: { id: "q3", label: "q3" } },
 
       {
-        data: { id: "e0", source: "q0", target: "q0", label:'b , b / bb' },
+        data: { id: "e0", source: "q0", target: "q0", label: "a ; a , R" },
       },
       {
-        data: { id: "e6", source: "q0", target: "q0", label:'a , b / ba' },
+        data: { id: "e1", source: "q1", target: "q1", label: "b ; a , R " },
       },
       {
-        data: { id: "e7", source: "q0", target: "q0", label:'b , a / ab' },
+        data: { id: "e2", source: "q1", target: "q1", label: "a ; a , R " },
       },
       {
-        data: { id: "e8", source: "q0", target: "q0", label:'a , a / aa' },
+        data: { id: "e3", source: "q2", target: "q2", label: "a ; a , L " },
+      },
+
+      {
+        data: { id: "e4", source: "q0", target: "q1", label: "b ; a , R" },
       },
       {
-        data: { id: "e9", source: "q0", target: "q0", label:'b , # / #b' },
+        data: { id: "e5", source: "q1", target: "q2", label: "( ) ; ( ) , L" },
       },
       {
-        data: { id: "e10", source: "q0", target: "q0", label:'a , # / #a' },
+        data: { id: "e6", source: "q2", target: "q3", label: "( ) ; ( ) , S" },
       },
       {
-        data: { id: "e1", source: "q0", target: "q1", label: "b , b / λ" },
-      },
-      {
-        data: { id: "e2", source: "q0", target: "q1", label: "a , a / λ" },
-      },
-      {
-        data: { id: "e3", source: "q1", target: "q1", label: "a , a / λ" },
-      },
-      {
-        data: { id: "e4", source: "q1", target: "q1", label: "b , b / λ" },
-      },
-      {
-        data: { id: "e5", source: "q1", target: "q2", label: "λ , # / #" },
+        data: { id: "e4", source: "q0", target: "q1", label: "b ; a , R" },
       },
     ],
     config: {
@@ -95,37 +90,25 @@ export default {
           },
         },
         {
-          selector: "edge#e4",
-          style: {
-            "padding-top": "5px",
-            color: "red",
-          },
-        },
-        {
           selector: "edge",
           style: {
-            width: 2,
-            "line-color": "#9998",
+            width: 3,
+            "line-color": "green",
             color: "white",
             "curve-style": "bezier", // Usar 'bezier' para las flechas
             "target-arrow-shape": "triangle",
             label: "data(label)",
-            "text-rotation": "autorotate",
-          },
-        },
-        {
-          selector: "#q2",
-          style: {
-            "border-color": "green", // Color del borde
-            "border-width": "2px", // Grosor del borde
-            "background-color": "white", // Color de fondo
-            "border-opacity": "1",
-            shape: "ellipse", // Forma del nodo
-            "text-outline-color": "green", // Color del texto
-            "text-outline-width": "2px", // Grosor del texto
+            "text-rotation": "-0.5",
           },
         },
       ],
+      layout: {
+        animate: true,
+        animationDuration: 500,
+        animationEasing: undefined,
+        name: "grid",
+        rows: 1,
+      },
     },
   }),
   methods: {
@@ -135,28 +118,53 @@ export default {
     afterCreated(cy) {
       // this.cy.push(cy)
       cy.add(this.elements)
-        .layout({ name: "grid", rows: 1, spacingFactor: 1.5 })
+        .layout({
+          name: "grid",
+          rows: 1,
+          spacingFactor: 1.5,
+        })
         .run();
     },
     onStartSimulation(estados, i) {
-      if (i > estados.length) {
+      if (i > estados.length - 1) {
+        // Fin de la simulación
+        console.log("Fin de la simulación");
         return;
       }
-      const estadoActual = estados[i];
-      -this.$refs.cyRef.instance.nodes().style({ "background-color": "white" });
+
+      const estado = estados[i];
+      const init = estado[0];
+      const fin = estado[1];
+
+      // Restablecer el color de todos los nodos a blanco
+      this.$refs.cyRef.instance.nodes().style({ "background-color": "white" });
+
+      // Cambiar el color del nodo inicial a azul
       this.$refs.cyRef.instance
-        .$(`#q${estadoActual}`)
+        .$(`#${init}`)
         .style({ "background-color": "blue" });
-      setTimeout(
-        function () {
+
+      // Esperar un tiempo antes de cambiar el color del nodo inicial
+      setTimeout(() => {
+        this.$refs.cyRef.instance
+          .$(`#${init}`)
+          .style({ "background-color": "white" });
+
+        // Cambiar el color del nodo final a rojo
+        this.$refs.cyRef.instance
+          .$(`#${fin}`)
+          .style({ "background-color": "green" });
+
+        // Esperar un tiempo antes de cambiar el color del nodo final
+        setTimeout(() => {
           this.$refs.cyRef.instance
-            .$(`#q${estadoActual}`)
+            .$(`#${fin}`)
             .style({ "background-color": "white" });
+
+          // Llamar recursivamente para el siguiente estado
           this.onStartSimulation(estados, i + 1);
-        }.bind(this),
-        this.value
-      );
-      // Cambia el tiempo de espera según tus preferencias
+        }, 1000);
+      }, 1000);
     },
   },
   mounted() {},

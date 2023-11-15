@@ -15,15 +15,13 @@
         ></b-form-input>
       </b-row>
       <b-row class="mb-1">
-        <b-button @click="validateWorld" variant="success">verificar</b-button>
+        <b-button @click="validateWord" variant="success">verificar</b-button>
       </b-row>
       <b-row>
         <b-alert
           :show="dismissCountDown"
           dismissible
           :variant="worldValidate ? 'success' : 'danger'"
-          @dismissed="dismissCountDown = 0"
-          @dismiss-count-down="countDownChanged"
         >
           <h3>
             {{ worldValidate ? "es palindromo es " : "no es palindromo" }}
@@ -32,83 +30,78 @@
         </b-alert>
       </b-row>
 
-      <b-row>
-        <stack-components :items="stack"></stack-components>
-      </b-row>
+      
     </b-container>
   </div>
 </template>
 
 <script>
-import { Stack } from "@/assets/stack.js";
-import stackComponents from "@/components/Stack.vue";
+import { TuringMachine } from "@/assets/Turing.js";
 export default {
   components: {
-    stackComponents,
   },
   data() {
     return {
       dismissSecs: 3,
       dismissCountDown: 0,
       inputString: "",
-      stack: new Stack(),
+      turing: null,
       worldValidate: "",
+      result : ['[q0,q0]','[q0,q1]','[q1,q1]','[q1,q2]','[q2,q2]','[q2,q2]','[q2,q3]']
     };
   },
+  mounted() {
+    const states = ["q0", "q1", "q2", "q3"];
+    const alphabet = ["a", "b"];
+    const tapeSymbols = ["a", "b", "_"];
+    const blankSymbol = "_";
+    const initialState = "q0";
+    const finalState = "q3";
+
+    // Definir las transiciones de la Máquina de Turing
+    const transitions = {
+      q0: ["q0", "a", "R"],
+      q0b: ["q1", "a", "R"],
+      q1a: ["q1", "a", "R"],
+      q1b: ["q1", "a", "R"],
+      q1_: ["q2", "_", "L"],
+      q2a: ["q2", "a", "L"],
+      q2b: ["q2", "b", "L"],
+      q2_: ["q3", "_", "N"],
+    };
+
+    // Crear la Máquina de Turing
+
+    this.turing = new TuringMachine(
+      states,
+      alphabet,
+      tapeSymbols,
+      blankSymbol,
+      initialState,
+      finalState,
+      transitions
+    );
+  },
   methods: {
-    validateWorld() {
-      if (this.inputString == "") {
-        return;
-      }
-      // Crear una pila vacía
-      this.stack.clear();
+    validateWord(){
+      let i=0
+      let array = [];
+      //quitar corchetes
+      this.result.forEach((element) => {
+       let palabra = element.replace("[", "");
+        palabra = palabra.replace("]", "");
+        array.push(palabra);
+      });
+      //volviendo un array de array
+      let arryOfArray = [];
+      array.forEach((element) => {
+        arryOfArray.push(element.split(","));
+      });
+      this.$emit('sendResult',arryOfArray,i)
+      
+    }
 
-      // Procesar la mitad izquierda de la cadena y empujarla a la pila
-      let halfLength = Math.floor(this.inputString.length / 2);
-      for (let i = 0; i < halfLength; i++) {
-        this.stack.pushState(0);
-        this.stack.push(this.inputString[i]);
-      }
-
-      // Verificar si la longitud de la cadena es impar
-      if (this.inputString.length % 2 === 1) {
-        halfLength++;
-      }
-
-      // Comparar la segunda mitad de la cadena con la pila
-      for (let i = halfLength; i < this.inputString.length; i++) {
-        this.stack.pushState(1);
-        if (this.stack.isEmpty() || this.inputString[i] !== this.stack.pop()) {
-          this.worldValidate = false;
-          this.recorrido();
-          return;
-        }
-      }
-
-      this.stack.pushState(2);
-      this.worldValidate = true;
-     
-      this.recorrido();
-      return;
-    },
    
-    recorrido() {
-      const estados = this.stack.states;
-      const i = 0;
-      this.$emit("start-simulation", estados, i);
-      this.showAlert();
-      setTimeout(() => {
-        this.stack.world.name=this.inputString
-        this.stack.world.accepted=this.worldValidate
-        this.inputString = "";
-      }, 500);
-    },
-    countDownChanged(dismissCountDown) {
-      this.dismissCountDown = dismissCountDown;
-    },
-    showAlert() {
-      this.dismissCountDown = this.dismissSecs;
-    },
   },
 };
 </script>
